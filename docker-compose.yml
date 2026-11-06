@@ -1,0 +1,44 @@
+# 本地开发基础设施：MySQL 8 + Redis 7
+# 用法：docker compose up -d
+# 数据通过命名卷持久化，首次启动自动创建 rong_pet 库，表结构由 Flyway 在应用启动时迁移。
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: rong-pet-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rong_pet
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+    ports:
+      - "3306:3306"
+    volumes:
+      - rong_pet_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: rong-pet-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - rong_pet_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  rong_pet_mysql:
+  rong_pet_redis:
