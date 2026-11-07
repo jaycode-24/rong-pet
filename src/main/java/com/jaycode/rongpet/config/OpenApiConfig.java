@@ -21,7 +21,7 @@ public class OpenApiConfig {
     public OpenAPI rongPetOpenApi() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("蓉宠平台 API")
+                        .title("蓉宠帮平台 API")
                         .description("成都宠物本地信任平台：小程序端与运营后台接口")
                         .version("v1"))
                 .components(new Components().addSecuritySchemes(TOKEN_HEADER,

@@ -36,3 +36,4 @@ build/
 .env
 *.local.yaml
 logs/
+data/uploads/

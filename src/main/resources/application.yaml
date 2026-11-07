@@ -82,11 +82,12 @@ rongpet:
   crypto:
     aes-key: ${RONGPET_CRYPTO_AES_KEY:}
     hmac-key: ${RONGPET_CRYPTO_HMAC_KEY:}
-  # 微信小程序 / 微信支付，未配置时不实例化对应 Bean
+  # 微信小程序 / 微信支付，未配置时不实例化对应 Bean；mock 仅在 dev 联调时开启
   wx:
     ma:
       appid: ${WX_MA_APPID:}
       secret: ${WX_MA_SECRET:}
+      mock: ${WX_MA_MOCK:false}
     pay:
       app-id: ${WX_PAY_APPID:}
       mch-id: ${WX_PAY_MCH_ID:}
@@ -103,3 +104,9 @@ rongpet:
     bucket: ${COS_BUCKET:}
     prefix: ${COS_PREFIX:rong-pet}
     presign-expire-seconds: 600
+  # 图片上传：生产必须走 COS；本地联调可临时开启本地目录兜底
+  upload:
+    max-size: 5242880
+    local-enabled: false
+    local-dir: ./data/uploads
+    local-base-url: /files
