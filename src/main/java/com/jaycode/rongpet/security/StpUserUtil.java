@@ -1,5 +1,6 @@
 package com.jaycode.rongpet.security;
 
+import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.stp.StpLogic;
 
 /**
@@ -34,9 +35,13 @@ public final class StpUserUtil {
         return stpLogic.getLoginIdAsLong();
     }
 
-    /** 未登录返回 null，不抛异常，用于审计字段填充等内部场景 */
+    /** 未登录或处于无 Sa-Token 上下文的线程（启动任务、定时任务）时返回 null，不抛异常，用于审计字段填充等内部场景 */
     public static Long getLoginIdOrNull() {
-        return stpLogic.isLogin() ? stpLogic.getLoginIdAsLong() : null;
+        try {
+            return stpLogic.isLogin() ? stpLogic.getLoginIdAsLong() : null;
+        } catch (SaTokenException e) {
+            return null;
+        }
     }
 
     public static String getTokenValue() {

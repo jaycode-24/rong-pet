@@ -2,13 +2,17 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT:3306}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=Asia/Shanghai&useSSL=true&allowPublicKeyRetrieval=false
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT:3306}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=true&allowPublicKeyRetrieval=false
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
-    hikari:
-      maximum-pool-size: 15
-      minimum-idle: 3
-      connection-timeout: 10000
+    druid:
+      initial-size: 3
+      min-idle: 3
+      max-active: 15
+      max-wait: 10000
+      # 生产环境关闭 Druid 监控面板，避免 /druid 暴露
+      stat-view-servlet:
+        enabled: false
   data:
     redis:
       host: ${REDIS_HOST}
