@@ -19,6 +19,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * AI 形象生成后台轮询执行器，每 15 秒一轮（ShedLock 保证多实例单跑）：
+ * 先把 RUNNING 超过 10 分钟的任务兜底置 FAILED，再消费 QUEUED 队列调用图像网关，
+ * 最后扫描失败的付费任务发起原路退款（退款失败下轮重试）。
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

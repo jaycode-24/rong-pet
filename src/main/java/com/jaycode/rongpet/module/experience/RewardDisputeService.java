@@ -20,6 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * 悬赏找回争议处理服务。
+ * 线索提供者可对悬赏帖发起“已找回”争议，争议未结清前系统退款（含到期自动退款）一律暂停；
+ * 管理员核验后可裁定支持找回（推进评分分账）、驳回或批准按未找回退款，并通过站内信通知双方。
+ */
 @Service
 @RequiredArgsConstructor
 public class RewardDisputeService {

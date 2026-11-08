@@ -26,9 +26,15 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * 体验中心综合服务：帖子收藏、首页概览、意见反馈与回复、爱宠小屋场景。
+ * 收藏取消为逻辑删除并可恢复；概览聚合待处理线索、进行中喂养请求、未读消息与本人在发帖；
+ * 反馈回复后联动站内信通知用户。
+ */
 @Service
 @RequiredArgsConstructor
 public class ExperienceService {
+    /** 通用分页大小 */
     public static final int PAGE_SIZE = 20;
     private final UserFavoriteMapper favorites;
     private final FeedbackMapper feedbacks;

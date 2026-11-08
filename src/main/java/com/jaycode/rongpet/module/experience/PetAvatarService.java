@@ -22,9 +22,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import java.util.*;
 
+/**
+ * AI 宠物形象生成的下单与配额服务（实际调网关在 PetAvatarWorker）。
+ * <ul>
+ *   <li>配额：每只宠物有免费成功次数（配置 pet.avatar.free.count），仅 SUCCEEDED 的免费任务计数；超额后按配置价收费</li>
+ *   <li>幂等：requestKey 与用户唯一，重复提交直接返回既有任务；同一宠物同时只允许一个未完成任务</li>
+ *   <li>付费：任务先落 WAIT_PAY，支付单关闭后允许重建一次（{@link #MAX_PAYMENT_REBUILDS}），支付成功由回调推进队列</li>
+ *   <li>选图：成功结果由用户手动设为宠物 aiAvatarUrl，与真实头像分离</li>
+ * </ul>
+ */
 @Service
 @RequiredArgsConstructor
 public class PetAvatarService {
+    /** 支付单被关闭后允许重建的最大次数，超过则提示联系客服 */
     public static final int MAX_PAYMENT_REBUILDS = 1;
     private final PetAvatarTaskMapper tasks;
     private final ExperienceLockMapper locks;

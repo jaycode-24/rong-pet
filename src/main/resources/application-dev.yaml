@@ -1,20 +1,21 @@
-# 本地开发环境配置。含仅用于本地联调的固定密钥，禁止用于生产。
+# 本地开发环境配置。所有敏感项均从环境变量读取，冒号后为本地默认值（仅联调用，非真实生产密钥）。
+# 真实值请写入项目根目录 .env（已 gitignore），再用 IDEA 运行配置或脚本注入，切勿提交明文。
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://43.136.31.135:3306/rong_pet_test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: fANMankn6me5WJ3x
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:rong_pet_test}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:}
     druid:
       # 仅本地联调开启 Druid 监控面板，访问 http://localhost:8080/druid
       stat-view-servlet:
         enabled: true
   data:
     redis:
-      host: 43.136.31.135
-      password: H7zFZYHFR4jSewrA
-      port: 6379
-      database: 0
+      host: ${REDIS_HOST:127.0.0.1}
+      password: ${REDIS_PASSWORD:}
+      port: ${REDIS_PORT:6379}
+      database: ${REDIS_DATABASE:0}
       timeout: 3000ms
 
 logging:
@@ -23,9 +24,9 @@ logging:
 
 rongpet:
   crypto:
-    # 32 字节 AES-256 密钥（base64），本地固定值仅用于联调，生产必须通过环境变量覆盖
-    aes-key: joIdvmFpIKtUlAg2LBRwIddCerDmSxDil3wkMul2yCo=
-    hmac-key: ZWcaoeDfFw/0dIxmtf8mYNJX08XYJssUcxd6ht+/BcQ=
+    # 默认值仅为本地联调固定密钥；生产必须通过 RONGPET_CRYPTO_AES_KEY/HMAC_KEY 环境变量覆盖
+    aes-key: ${RONGPET_CRYPTO_AES_KEY:joIdvmFpIKtUlAg2LBRwIddCerDmSxDil3wkMul2yCo=}
+    hmac-key: ${RONGPET_CRYPTO_HMAC_KEY:ZWcaoeDfFw/0dIxmtf8mYNJX08XYJssUcxd6ht+/BcQ=}
   cos:
     # 密钥禁止入库：在 IDEA 运行配置 Environment variables 注入 COS_SECRET_ID / COS_SECRET_KEY
     secret-id: ${COS_SECRET_ID:}
@@ -41,9 +42,9 @@ rongpet:
     # 本地无商户凭证时使用 mock 支付通道，创建即视为支付成功
     mock: ${WX_PAY_MOCK:true}
   dev:
-    # 仅 dev 生效：账号表为空时初始化的默认管理员
-    admin-username: admin
-    admin-password: Admin@123456
+    # 仅 dev 生效：账号表为空时初始化的默认管理员；密码可用 DEV_ADMIN_PASSWORD 覆盖
+    admin-username: ${DEV_ADMIN_USERNAME:admin}
+    admin-password: ${DEV_ADMIN_PASSWORD:Admin@123456}
   upload:
     # 本地无 COS 凭证时的图片存储兜底，仅用于联调
     local-enabled: ${UPLOAD_LOCAL_ENABLED:true}
